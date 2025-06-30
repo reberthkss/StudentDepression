@@ -4,12 +4,12 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div className="">
+    <div className="min-h-screen flex flex-col pb-16">
       <div className="flex flex-col">
         <div className="">
-          <Robot className='justify-self-center h-100 w-100 fill-white stroke-black dark:fill-black dark:stroke-white' />
+          <Robot className='justify-self-center h-80 w-80 fill-white stroke-black dark:fill-black dark:stroke-white' />
         </div>
-        <div className="">
+        <div className="mb-8 text-center">
           <p className='text-black text-center text-[1.8rem] dark:text-white font-mono'>Student Depression</p>
         </div>
         <div className='mx-5'>
