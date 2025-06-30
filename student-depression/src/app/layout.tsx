@@ -20,14 +20,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [dark, setDark] = useState(false)
+  const [dark, setDark] = useState(false);
 
   return (
     <html lang="en" className={dark ? "dark" : ""}>
       <body
-        className={`bg-red dark:bg-black ${geistSans.variable} ${geistMono.variable} antialiased `}
+        className={`dark:bg-black ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex flex-row h-10 m-2">
+        <div className="fixed top-0 w-full flex flex-row h-10 m-2">
           <span className="rounded-full px-2 content-center dark:text-white dark:hover:bg-neutral-600 hover:bg-neutral-200 hover:cursor-pointer material-icons" onClick={() => {
             setDark(!dark);
           }}>dark_mode</span>
