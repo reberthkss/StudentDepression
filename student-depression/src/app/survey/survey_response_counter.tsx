@@ -3,7 +3,7 @@
 import { use, useContext } from "react"
 import { SurveyDispatchContext, SurveyResponseContext } from "../context/survey_context";
 
-export default function SurveyResponseCounter({questions}: {questions: Promise<Question[]>}) {
+export default function SurveyResponseCounter({questions}: {questions: Promise<QuestionInterface[]>}) {
     // const allQuestions = use(questions);
     // const questionDispatch = useContext(SurveyDispatchContext);
     const questionsResponse = useContext(SurveyResponseContext);
