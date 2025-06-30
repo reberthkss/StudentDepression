@@ -3,7 +3,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { useReducer, useState } from "react";
-import {SurveyDispatchContext, SurveyResponseContext, surveyReducer} from "./context/survey_context"
+import { SurveyDispatchContext, SurveyResponseContext, surveyReducer } from "./context/survey_context"
 import 'material-icons/iconfont/material-icons.css';
 
 const geistSans = Geist({
