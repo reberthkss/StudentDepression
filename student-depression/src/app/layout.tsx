@@ -27,7 +27,7 @@ export default function RootLayout({
       <body
         className={`dark:bg-black ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="fixed top-0 w-full flex flex-row h-10 m-2">
+        <div className="fixed top-0 w-full flex flex-row h-10 m-2 z-1000">
           <span className="rounded-full px-2 content-center dark:text-white dark:hover:bg-neutral-600 hover:bg-neutral-200 hover:cursor-pointer material-icons" onClick={() => {
             setDark(!dark);
           }}>dark_mode</span>

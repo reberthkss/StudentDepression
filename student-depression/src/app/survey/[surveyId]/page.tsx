@@ -53,8 +53,8 @@ export default function SurveyQuestionPage() {
     }
 
     return (
-        <div className="flex flex-col min-h-screen pb-16">
-            <div className="flex justify-center mt-8">
+        <div className="flex flex-col my-16">
+            <div className="flex justify-center">
                 <SurveyInit className="w-50 h-100" />
             </div>
 
