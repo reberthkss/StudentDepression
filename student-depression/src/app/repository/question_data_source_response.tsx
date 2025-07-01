@@ -1,4 +1,6 @@
-const questions: QuestionInterface[] = [
+import {Question, QuestionInterface, QuestionType, ResponseOption} from '../model/question';
+
+export const questions: QuestionInterface[] = [
     new Question(
         {
             id: "1",
@@ -8,7 +10,7 @@ const questions: QuestionInterface[] = [
             options: [
                 new ResponseOption("Masculino"),
                 new ResponseOption("Feminino"),
-                new ResponseOption("LGBTQIAPN+")
+                new ResponseOption("Outro")
             ],
             response: undefined
         }
