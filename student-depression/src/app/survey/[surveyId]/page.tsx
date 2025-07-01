@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import SurveyInit from "../../../../public/svgs/survey-init";
 import { useContext, useEffect, useState } from 'react';
-import { SurveyResponseContext, SurveyDispatchContext } from '../../context/survey_context';
+import { SurveyQuestionContext, SurveyDispatchContext } from '../../context/survey_context';
 import { QuestionRepository } from '../../repository/question_respository';
 import { useRouter } from 'next/navigation';
 import { QuestionType } from '@/app/model/question';
@@ -12,12 +12,11 @@ export default function SurveyQuestionPage() {
     const params = useParams();
     const surveyId = params.surveyId as string;
     const router = useRouter();
-    const questions = useContext(SurveyResponseContext);
+    const questions = useContext(SurveyQuestionContext);
     const dispatch = useContext(SurveyDispatchContext);
     const repo = QuestionRepository.instance;
 
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
 
        // Busca a pergunta específica pelo surveyId da URL
     const question = questions.find(q => q.id === surveyId);
@@ -25,32 +24,6 @@ export default function SurveyQuestionPage() {
     useEffect(() => {
         setSelectedOption(question?.response?.value || null);
     }, [question]);
-   
-    useEffect(() => {
-        const loadQuestions = async () => {
-            try {
-                if (questions.length === 0) {
-                    const fetchedQuestions = await repo.fetch();
-                    dispatch?.({ type: 'save_fetch', questions: fetchedQuestions });
-                }
-            } catch (error) {
-                console.error("Failed to load questions:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        loadQuestions();
-    }, [dispatch, repo, questions.length]);
-
-    useEffect(() => {
-        if (!question && !isLoading && questions.length > 0) {
-            router.push('/survey/1');
-        }
-    }, [question, isLoading, questions.length, router]);
-
-    const handleOptionSelect = (value: string) => {
-        setSelectedOption(value);
-    };
 
     const handleNext = async () => {
         if ((!selectedOption && question?.type === QuestionType.option) || !question) return;
@@ -75,10 +48,6 @@ export default function SurveyQuestionPage() {
         }
     };
 
-    if (isLoading) {
-        return <div className="text-center p-8">Carregando...</div>;
-    }
-
     if (!question) {
         return <div className="text-center p-8">Pergunta não encontrada</div>;
     }
@@ -90,11 +59,11 @@ export default function SurveyQuestionPage() {
             </div>
 
             <div className="flex-1 p-6 mt-4">
-                <h2 className="text-2xl font-bold mb-6 text-center dark:text-white">
+                <h2 className="text-[2rem] font-bold text-center dark:text-white">
                     {question.title}
                 </h2>
                 {question.description && (
-                    <p className="text-sm text-gray-500 mb-4 text-center dark:text-gray-400">
+                    <p className="text-[1.3rem] text-indigo-500 mb-4 text-center">
                         {question.description}
                     </p>
                 )}
@@ -104,14 +73,14 @@ export default function SurveyQuestionPage() {
                         // Renderização para perguntas de múltipla escolha
                         <div className="space-y-4">
                             {question.options?.map((option, index) => (
-                                <label key={index} className="flex items-center space-x-3">
+                                <label key={index} className="flex items-center space-x-3 font-mono dark:text-white border-3 p-3 rounded-md border-indigo-300">
                                     <input
                                         type="radio"
                                         name={`q-${question.id}`}
                                         value={option.value}
                                         onChange={() => setSelectedOption(option.value)}
                                     />
-                                    <span>{option.value}</span>
+                                    <span className='font-mono dark:text-white'>{option.value}</span>
                                 </label>
                             ))}
                         </div>
