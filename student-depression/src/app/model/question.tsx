@@ -7,9 +7,9 @@ interface QuestionInterface {
     response: QuestionResponseInterface | undefined
 }
 
-enum QuestionType {
-    option,
-    text
+export enum QuestionType {
+    option = "option",
+    text = "text"
 }
 
 interface ResponseOptionInterface {
@@ -55,3 +55,15 @@ class QuestionResponse implements QuestionResponseInterface {
     value: string;
 
 }
+
+export {
+    Question,
+    ResponseOption,
+    QuestionResponse,
+};
+
+export type {
+    QuestionInterface,
+    ResponseOptionInterface,
+    QuestionResponseInterface
+};
