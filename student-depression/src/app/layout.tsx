@@ -2,8 +2,7 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { useReducer, useState } from "react";
-import { SurveyDispatchContext, SurveyResponseContext, surveyReducer } from "./context/survey_context"
+import { useState } from "react";
 import 'material-icons/iconfont/material-icons.css';
 
 const geistSans = Geist({
@@ -22,23 +21,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [dark, setDark] = useState(false);
-  const [questions, surveyDispatch] = useReducer(surveyReducer, [])
 
   return (
     <html lang="en" className={dark ? "dark" : ""}>
       <body
         className={`dark:bg-black ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="fixed top-0 w-full flex flex-row h-10 m-2">
+        <div className="fixed top-0 w-full flex flex-row h-10 m-2 z-3">
           <span className="rounded-full px-2 content-center dark:text-white dark:hover:bg-neutral-600 hover:bg-neutral-200 hover:cursor-pointer material-icons" onClick={() => {
             setDark(!dark);
           }}>dark_mode</span>
         </div>
-        <SurveyResponseContext value={questions}>
-          <SurveyDispatchContext value={surveyDispatch}>
-            {children}
-          </SurveyDispatchContext>
-        </SurveyResponseContext>
+        {children}
       </body>
     </html>
   );

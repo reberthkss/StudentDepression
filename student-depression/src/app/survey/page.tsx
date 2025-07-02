@@ -1,107 +1,48 @@
-'use client';
-
+'use client'
 import SurveyInit from "../../../public/svgs/survey-init";
-import { useContext, useEffect, useState } from 'react';
-import { SurveyResponseContext, SurveyDispatchContext } from '../context/survey_context';
+import { useContext, } from 'react';
+import { SurveyQuestionContext, } from '../context/survey_context';
 import { QuestionRepository } from '../repository/question_respository';
-import { useRouter } from 'next/navigation';
+import Link from "next/link";
 
 export default function Home() {
-  const router = useRouter();
-  const questions = useContext(SurveyResponseContext);
-  const dispatch = useContext(SurveyDispatchContext);
+  const dispatch = useContext(SurveyQuestionContext);
   const repo = QuestionRepository.instance;
-
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Busca a pergunta específica (ID 1 - Gênero)
-  const question = questions.find(q => q.id === "1");
-  useEffect(() => {
-    const loadQuestions = async () => {
-      if (questions.length === 0) {
-        const fetchedQuestions = await repo.fetch();
-        dispatch?.({ type: 'save_fetch', questions: fetchedQuestions });
-      }
-      setIsLoading(false);
-    };
-    loadQuestions();
-  }, []);
-
-  const handleOptionSelect = (value: string) => {
-    setSelectedOption(value);
-  };
-
-  const handleNext = async () => {
-    if (!selectedOption || !question) return;
-
-    // Atualiza no repositório e contexto
-    await repo.updateResponse(question.id, selectedOption);
-    dispatch?.({
-      type: 'update_response',
-      questionId: question.id,
-      response: selectedOption
-    });
-
-    // Navega para a próxima pergunta (ID 2)
-    router.push("/");
-  };
-
-  if (isLoading) {
-    return <div className="text-center p-8">Carregando...</div>;
-  }
-
-  if (!question) {
-    return <div className="text-center p-8">PergunAAAA encontrada</div>;
-  }
 
   return (
     <div className="flex flex-col">
       <div>
         <SurveyInit className="justify-self-center w-50 h-100" />
       </div>
-
       <div className="flex-1 p-6 mt-4">
-        <h2 className="text-2xl font-bold mb-6 text-center dark:text-white">
-          {question.title}
-        </h2>
-        {question.description && (
-          <p className="text-sm text-gray-500 mb-4 text-center dark:text-gray-400">
-            {question.description}
-          </p>
-        )}
-
-        <div className="space-y-4 mx-auto max-w-md">
-          {question.options?.map((option, index) => (
-            <label
-              key={index}
-              className={`flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 ${selectedOption === option.value ? 'bg-indigo-50 dark:bg-indigo-900' : ''
-                }`}
-            >
-              <input
-                type="radio"
-                name="gender"
-                className="h-5 w-5 text-indigo-600"
-                value={option.value}
-                checked={selectedOption === option.value}
-                onChange={() => handleOptionSelect(option.value)}
-              />
-              <span className="dark:text-white">{option.value}</span>
-            </label>
-          ))}
-        </div>
+        <p className="font-mono dark:text-white">
+          Antes de começarmos, gostaríamos de entender um pouco mais sobre o seu contexto de vida.
+          As próximas perguntas têm o objetivo de compreender aspectos do seu dia a dia, suas emoções e experiências recentes.
+          Essas informações ajudarão nossa aplicação a oferecer uma análise mais precisa e personalizada, sempre com foco no seu bem-estar.
+        </p>
+        <br />
+        <p className="font-mono font-bold dark:text-white">
+          🔒 Seus dados são tratados com total confidencialidade.
+        </p>
+        <br />
+        <p className="font-mono dark:text-white">
+          ⚠️ <span className="font-bold ">Importante:</span> Esta aplicação utiliza inteligência artificial para identificar possíveis sinais de depressão com base nas suas respostas.
+          No entanto, ela <span className="font-bold">não substitui o diagnóstico de um profissional de saúde mental.</span>
+          As informações fornecidas aqui <span className="font-bold">não devem ser interpretadas como um diagnóstico clínico ou recomendação médica.</span>
+        </p>
+        <br />
+        <p className="font-mono dark:text-white">
+          Se você estiver passando por um momento difícil, recomendamos que procure ajuda profissional qualificada.
+          Você não está sozinho — cuidar da saúde mental é um passo importante, e buscar apoio é um ato de coragem.
+        </p>
       </div>
-
-      <button
-        onClick={handleNext}
-        disabled={!selectedOption}
-        className={`fixed bottom-0 w-full py-3 text-white font-semibold text-2xl transition-colors ${selectedOption
-            ? 'bg-indigo-600 hover:bg-indigo-500'
-            : 'bg-indigo-400 cursor-not-allowed'
-          }`}
-      >
-        Próximo
-      </button>
+      <Link href={"/survey/1"}>
+        <div className='fixed bottom-0 bg-indigo-600 w-full cursor-pointer hover:bg-indigo-500'>
+          <p className='text-center text-shadow-md text-white font-semibold text-[2rem] dark:text-white'>
+            Iniciar
+          </p>
+        </div>
+      </Link>
     </div>
   );
 }

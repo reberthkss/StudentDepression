@@ -1,4 +1,4 @@
-import SurveyHeader from "./survey_header";
+import { SurveyProvider } from "../context/survey_context";
 
 export default function RootLayout({
   children,
@@ -7,9 +7,10 @@ export default function RootLayout({
 }>) {
 
   return (
-    <div className="">
-      <SurveyHeader/>
-      {children}
+    <div>
+      <SurveyProvider >
+        {children}
+      </SurveyProvider>
     </div>
   );
 }
