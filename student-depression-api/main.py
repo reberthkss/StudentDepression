@@ -50,7 +50,7 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {}
 
 @app.get("/health")
 async def health_check():
@@ -94,7 +94,3 @@ async def predict_depression(request: PredictionRequest):
             status_code=400, 
             detail=f"Erro ao processar predição: {str(e)}"
         )
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
