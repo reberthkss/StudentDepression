@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
-FRONTEND_URL = "https://studentdepression.onrender.com/"
+FRONTEND_URL = "https://studentdepression.onrender.com"
 
 origins = [
         "http://localhost:3000", 
@@ -15,7 +15,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
