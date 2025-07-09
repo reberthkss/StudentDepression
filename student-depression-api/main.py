@@ -1,10 +1,21 @@
-from typing import Optional
-from fastapi import FastAPI
+from typing import Optional, List
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import joblib
 from pathlib import Path
+import numpy as np
 
 FRONTEND_URL = "https://studentdepression.onrender.com"
+
+# Modelo Pydantic para validação dos dados de entrada
+class PredictionRequest(BaseModel):
+    features: List[float]  # Lista de features numéricas
+    
+class PredictionResponse(BaseModel):
+    prediction: int
+    probability: List[float]
+    depression_risk: str
 
 # Carregar o modelo e scaler
 RESOURCES_PATH = Path(__file__).parent / "resources"
@@ -48,6 +59,41 @@ async def health_check():
         "model_loaded": model is not None,
         "scaler_loaded": scaler is not None
     }
+
+@app.post("/predict", response_model=PredictionResponse)
+async def predict_depression(request: PredictionRequest):
+    # Verificar se os modelos foram carregados
+    if model is None or scaler is None:
+        raise HTTPException(
+            status_code=500, 
+            detail="Modelo ou scaler não carregados corretamente"
+        )
+    
+    try:
+        # Converter para numpy array
+        features = np.array(request.features).reshape(1, -1)
+        
+        # Aplicar o scaler
+        features_scaled = scaler.transform(features)
+        
+        # Fazer a predição
+        prediction = model.predict(features_scaled)[0]
+        prediction_proba = model.predict_proba(features_scaled)[0]
+        
+        # Determinar o risco de depressão
+        depression_risk = "Alto" if prediction == 1 else "Baixo"
+        
+        return PredictionResponse(
+            prediction=int(prediction),
+            probability=prediction_proba.tolist(),
+            depression_risk=depression_risk
+        )
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Erro ao processar predição: {str(e)}"
+        )
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Optional[str] = None):
