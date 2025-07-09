@@ -1,13 +1,8 @@
 'use client'
 import SurveyInit from "../../../public/svgs/survey-init";
-import { useContext, } from 'react';
-import { SurveyQuestionContext, } from '../context/survey_context';
-import { QuestionRepository } from '../repository/question_respository';
 import Link from "next/link";
 
 export default function Home() {
-  const dispatch = useContext(SurveyQuestionContext);
-  const repo = QuestionRepository.instance;
 
   return (
     <div className="flex flex-col">

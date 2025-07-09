@@ -1,12 +1,12 @@
 'use client'
 
-import { use, useContext } from "react"
+import { useContext } from "react"
 import { SurveyQuestionContext } from "../../context/survey_context";
 
-export default function SurveyResponseCounter({}: {}) {
+export default function SurveyResponseCounter() {
     const questionsResponse = useContext(SurveyQuestionContext);
 
-    const answeredQuestionsCount = questionsResponse.filter((q) => q.response != undefined).length;
+    const answeredQuestionsCount = questionsResponse.filter((q) => q.response !== undefined).length;
     
     return (
         <div className="h-10 mx-10 my-2 content-center">
