@@ -1,7 +1,7 @@
 import { QuestionResponseInterface } from "../model/question";
 
 export class SurveyService {
-    static API_URL: string = "https://studentdepression-api.onrender.com/";
+    static API_URL: string = process.env.API_URL || 'http://localhost:4000';
 
     static async requestFeedback(responses: QuestionResponseInterface[]) {
         try {
