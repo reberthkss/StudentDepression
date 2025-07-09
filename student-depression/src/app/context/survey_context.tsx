@@ -1,6 +1,6 @@
 'use client'
 
-import { ActionDispatch, createContext, Suspense, use, useReducer } from "react";
+import { createContext, Dispatch, Suspense, use, useReducer } from "react";
 import { QuestionInterface, QuestionResponse } from '../model/question';
 import { QuestionRepository } from "../repository/question_respository";
 
@@ -8,7 +8,7 @@ type SurveyAction =
   | { type: 'save_fetch', questions: QuestionInterface[] }
   | { type: 'update_response', questionId: string, response: string };
 export const SurveyQuestionContext = createContext<QuestionInterface[]>([]);
-export const SurveyDispatchContext = createContext<ActionDispatch<any> | null>(null);
+export const SurveyDispatchContext = createContext<Dispatch<SurveyAction> | null>(null);
 
 export function surveyReducer(questions: QuestionInterface[], action: SurveyAction): QuestionInterface[] {
   switch (action.type) {
@@ -30,7 +30,7 @@ export function surveyReducer(questions: QuestionInterface[], action: SurveyActi
   }
 }
 
-export function SurveyProvider({ children }: { children: any }) {
+export function SurveyProvider({ children }: { children: React.ReactNode }) {
   const repo = QuestionRepository.instance;
   const questions = repo.fetch();
 
@@ -43,16 +43,16 @@ export function SurveyProvider({ children }: { children: any }) {
   )
 }
 
-export function SurveyConsumer({ children, questions }: { children: any, questions: Promise<QuestionInterface[]> }) {
+export function SurveyConsumer({ children, questions }: { children: React.ReactNode, questions: Promise<QuestionInterface[]> }) {
   const allQuestions = use(questions);
   const [initQuestions, surveyDispatch] = useReducer(surveyReducer, allQuestions);
 
   return (
-    <SurveyQuestionContext value={initQuestions}>
-      <SurveyDispatchContext value={surveyDispatch}>
+    <SurveyQuestionContext.Provider value={initQuestions}>
+      <SurveyDispatchContext.Provider value={surveyDispatch}>
         {children}
-      </SurveyDispatchContext>
-    </SurveyQuestionContext>
+      </SurveyDispatchContext.Provider>
+    </SurveyQuestionContext.Provider>
 
   )
 } 
