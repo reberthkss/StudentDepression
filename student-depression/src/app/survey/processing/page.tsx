@@ -12,23 +12,26 @@ export default function Processing() {
     const [loading, setLoading] = useState<boolean>(true);
     const [depressionProbability, setDepressionProbability] = useState<number | null>(null);
     const questions = useContext(SurveyQuestionContext);
-    const answeredQuestions: number[] = questions
+    const answeredQuestions: Record<string, any> = questions
         .filter(q => q.response !== undefined && q.response !== null)
         .sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id))
-        .map(q => {
-            if (q.id === '2') {
-                const birthDate = new Date(q.response!);
+        .reduce((json, question) => {
+            if (question.id == 'age') { 
+                const birthDate = new Date(question.response!);
                 const today = new Date();
-                const age = today.getFullYear() - birthDate.getFullYear();
+                var age = today.getFullYear() - birthDate.getFullYear();
                 const monthDiff = today.getMonth() - birthDate.getMonth();
                 if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                    return (age - 1).toString();
+                     age = (age - 1);
                 }
-                return age.toString();
+                
+                json[question.id] = age.toString();
+                return json;
             }
-            return q.response!
-        }
-        ).map(response => Number.parseFloat(response));
+
+            json[question.id] = question.response;
+            return json;
+        }, {} as Record<string, any>);
 
     useEffect(() => {
         const fetchData = async () => {

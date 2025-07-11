@@ -1,4 +1,4 @@
-import { QuestionBase } from "../model/question_type";
+import { QuestionBase } from "../model";
 import { questions } from "./question_data_source";
 
 export interface QuestionRepositoryInterface {

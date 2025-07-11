@@ -2,7 +2,7 @@
 
 import { createContext, Dispatch, Suspense, use, useReducer } from "react";
 import { QuestionRepository } from "../repository/question_respository";
-import { QuestionBase } from "../model/question_type";
+import { QuestionBase } from "../model";
 
 type SurveyAction =
   | { type: 'save_fetch', questions: QuestionBase[] }

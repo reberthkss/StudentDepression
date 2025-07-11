@@ -2,19 +2,15 @@
 export class SurveyService {
     static API_URL: string = 'https://studentdepression-api.onrender.com';
 
-    static async requestFeedback(responses: number[]) {
+    static async requestFeedback(responses: Record<string, any>): Promise<any> {
         try {
             const response = await fetch(`${this.API_URL}/predict`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    features: responses,
-                }),
+                body: JSON.stringify(responses),
             });
-
-            console.log("Responses => ", responses)
 
             if (response.ok) {
                 const data = await response.json();
@@ -23,7 +19,6 @@ export class SurveyService {
 
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         } catch (error) {
-            console.error("Error requesting feedback:", error);
             throw error;
         }
     }

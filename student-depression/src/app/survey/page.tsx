@@ -31,7 +31,7 @@ export default function Home() {
           Você não está sozinho — cuidar da saúde mental é um passo importante, e buscar apoio é um ato de coragem.
         </p>
       </div>
-      <Link href={"/survey/1"}>
+      <Link href={"/survey/gender"}>
         <div className='fixed bottom-0 bg-indigo-600 w-full cursor-pointer hover:bg-indigo-500'>
           <p className='text-center text-shadow-md text-white font-semibold text-[2rem] dark:text-white'>
             Iniciar
