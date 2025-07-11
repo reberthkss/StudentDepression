@@ -2,7 +2,7 @@
 export class SurveyService {
     static API_URL: string = 'https://studentdepression-api.onrender.com';
 
-    static async requestFeedback(responses: Record<string, any>): Promise<any> {
+    static async requestFeedback(responses: Record<string, string | number>): Promise<any> {
         try {
             const response = await fetch(`${this.API_URL}/predict`, {
                 method: 'POST',

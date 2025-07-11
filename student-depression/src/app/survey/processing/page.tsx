@@ -12,7 +12,7 @@ export default function Processing() {
     const [loading, setLoading] = useState<boolean>(true);
     const [depressionProbability, setDepressionProbability] = useState<number | null>(null);
     const questions = useContext(SurveyQuestionContext);
-    const answeredQuestions: Record<string, any> = questions
+    const answeredQuestions: Record<string, string | number> = questions
         .filter(q => q.response !== undefined && q.response !== null)
         .sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id))
         .reduce((json, question) => {
@@ -29,9 +29,9 @@ export default function Processing() {
                 return json;
             }
 
-            json[question.id] = question.response;
+            json[question.id] = question.response as string | number;
             return json;
-        }, {} as Record<string, any>);
+        }, {} as Record<string, string | number>);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,7 +44,6 @@ export default function Processing() {
 
             } catch (error) {
                 // todo
-                console.log("Error => ", error)
             }
         }
 
