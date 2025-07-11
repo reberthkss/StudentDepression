@@ -1,4 +1,4 @@
-import SurveyResponseCounter from "./survey_response_counter";
+import SurveyResponseCounter from "./component/survey_response_counter";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
