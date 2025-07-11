@@ -7,6 +7,7 @@ import { SurveyProcessing } from "../../../../public/svgs/survey-processing";
 import { Loading } from "../../../../public/animated/loading";
 import SurveyFeedback from "../../../../public/svgs/survey-feedback";
 import Link from "next/dist/client/link";
+import { SurveyPredictDepressionResponse } from "@/app/model/survey_predict_depression_response";
 
 export default function Processing() {
     const [loading, setLoading] = useState<boolean>(true);
@@ -37,7 +38,7 @@ export default function Processing() {
         const fetchData = async () => {
 
             try {
-                const response = await SurveyService.requestFeedback(answeredQuestions)
+                const response: SurveyPredictDepressionResponse = await SurveyService.requestFeedback(answeredQuestions)
                 const probabilityToDepression = response.probability[response.prediction] * 100;
                 setDepressionProbability(probabilityToDepression);
                 setLoading(false);
