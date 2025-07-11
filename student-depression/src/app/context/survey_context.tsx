@@ -1,30 +1,27 @@
 'use client'
 
 import { createContext, Dispatch, Suspense, use, useReducer } from "react";
-import { QuestionInterface, QuestionResponse } from '../model/question';
 import { QuestionRepository } from "../repository/question_respository";
+import { QuestionBase } from "../model/question_type";
 
 type SurveyAction =
-  | { type: 'save_fetch', questions: QuestionInterface[] }
+  | { type: 'save_fetch', questions: QuestionBase[] }
   | { type: 'update_response', questionId: string, response: string };
-export const SurveyQuestionContext = createContext<QuestionInterface[]>([]);
+export const SurveyQuestionContext = createContext<QuestionBase[]>([]);
 export const SurveyDispatchContext = createContext<Dispatch<SurveyAction> | null>(null);
 
-export function surveyReducer(questions: QuestionInterface[], action: SurveyAction): QuestionInterface[] {
+export function surveyReducer(questions: QuestionBase[], action: SurveyAction): QuestionBase[] {
   switch (action.type) {
     case 'save_fetch':
       return [...action.questions];
     case 'update_response':
-      return questions.map(q => {
-        if (q.id === action.questionId) {
-          return {
-            ...q,
-            response: new QuestionResponse(action.response) // Usa a classe correta
-          };
-        }
-        return q;
-      });
+      {
+        const questionIndex = questions.findIndex(q => q.id === action.questionId);
+        if (questionIndex === -1) return questions;
+        questions[questionIndex].response = action.response;
 
+        return [...questions];
+      }
     default:
       return questions;
   }
@@ -43,7 +40,7 @@ export function SurveyProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function SurveyConsumer({ children, questions }: { children: React.ReactNode, questions: Promise<QuestionInterface[]> }) {
+export function SurveyConsumer({ children, questions }: { children: React.ReactNode, questions: Promise<QuestionBase[]> }) {
   const allQuestions = use(questions);
   const [initQuestions, surveyDispatch] = useReducer(surveyReducer, allQuestions);
 

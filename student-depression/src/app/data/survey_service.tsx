@@ -1,11 +1,18 @@
-import { QuestionResponseInterface } from "../model/question";
 
 export class SurveyService {
     static API_URL: string = 'https://studentdepression-api.onrender.com';
 
-    static async requestFeedback(responses: QuestionResponseInterface[]) {
+    static async requestFeedback(responses: number[]) {
         try {
-            const response = await fetch(`${this.API_URL}`);
+            const response = await fetch(`${this.API_URL}/predict`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    features: responses,
+                }),
+            });
 
             console.log("Responses => ", responses)
 
