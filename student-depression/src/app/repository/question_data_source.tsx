@@ -1,10 +1,10 @@
-import { 
-    AlternativeQuestion, 
-    DateQuestion, 
-    NumberQuestion, 
-    QuestionBase, 
-    QuestionWithLayoutDecorator, 
-    SliderQuestion 
+import {
+    AlternativeQuestion,
+    DateQuestion,
+    NumberQuestion,
+    QuestionBase,
+    QuestionWithLayoutDecorator,
+    SliderQuestion
 } from "../model";
 
 export const questions: QuestionBase[] = [
@@ -89,7 +89,7 @@ export const questions: QuestionBase[] = [
 
     // 6. Pressão acadêmica - começando fatores de estresse
     new QuestionWithLayoutDecorator(
-        new SliderQuestion(
+        new AlternativeQuestion(
             {
                 id: "academic_pressure",
                 title: "Como você avalia seu nível de pressão acadêmica?",
@@ -101,13 +101,20 @@ export const questions: QuestionBase[] = [
                     "Alto",
                     "Muito alto"
                 ],
+                alternatives: [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5"
+                ]
             }
         )
     ),
 
     // 7. Satisfação com faculdade
     new QuestionWithLayoutDecorator(
-        new SliderQuestion(
+        new AlternativeQuestion(
             {
                 id: "study_satisfaction",
                 title: "Qual seu nível de satisfação com a faculdade?",
@@ -119,13 +126,20 @@ export const questions: QuestionBase[] = [
                     "Satisfeito",
                     "Muito satisfeito"
                 ],
+                alternatives: [
+                    "0",
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
             }
         )
     ),
 
     // 7. Pressão no trabalho (se aplicável)
     new QuestionWithLayoutDecorator(
-        new SliderQuestion(
+        new AlternativeQuestion(
             {
                 id: "work_pressure",
                 title: "Como você avalia seu nível de pressão no trabalho?",
@@ -138,13 +152,21 @@ export const questions: QuestionBase[] = [
                     "Alto",
                     "Muito alto"
                 ],
+                alternatives: [
+                    "0",
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5"
+                ]
             }
         )
     ),
 
     // 8. Satisfação com trabalho
     new QuestionWithLayoutDecorator(
-        new SliderQuestion(
+        new AlternativeQuestion(
             {
                 id: "job_satisfaction",
                 title: "Qual seu nível de satisfação com o trabalho?",
@@ -157,6 +179,14 @@ export const questions: QuestionBase[] = [
                     "Satisfeito",
                     "Muito satisfeito"
                 ],
+                alternatives: [
+                    "0",
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5"
+                ]
             }
         )
     ),
@@ -211,7 +241,7 @@ export const questions: QuestionBase[] = [
 
     // 11. Contexto familiar - situação financeira
     new QuestionWithLayoutDecorator(
-        new SliderQuestion(
+        new AlternativeQuestion(
             {
                 id: "financial_stress",
                 title: "Como você avalia a situação financeira da sua família?",
@@ -223,6 +253,13 @@ export const questions: QuestionBase[] = [
                     "Difícil",
                     "Muito difícil",
                 ],
+                alternatives: [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5"
+                ]
             }
         )
     ),
