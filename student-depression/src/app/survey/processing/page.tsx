@@ -17,15 +17,15 @@ export default function Processing() {
         .filter(q => q.response !== undefined && q.response !== null)
         .sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id))
         .reduce((json, question) => {
-            if (question.id == 'age') { 
+            if (question.id == 'age') {
                 const birthDate = new Date(question.response!);
                 const today = new Date();
-                var age = today.getFullYear() - birthDate.getFullYear();
+                let age = today.getFullYear() - birthDate.getFullYear();
                 const monthDiff = today.getMonth() - birthDate.getMonth();
                 if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                     age = (age - 1);
+                    age = (age - 1);
                 }
-                
+
                 json[question.id] = age.toString();
                 return json;
             }
@@ -44,7 +44,8 @@ export default function Processing() {
                 setLoading(false);
 
             } catch (error) {
-                // todo
+                console.error('Error fetching depression prediction:', error);
+
             }
         }
 
