@@ -87,11 +87,9 @@ async def predict_depression(request: PredictionRequest):
             "Gender": [request.gender],
             "Age": [request.age],
             "Profession": [request.profession],
-            "Academic Pressure": [request.academic_pressure],
-            "Work Pressure": [request.work_pressure],
+            "Total Pressure": [request.academic_pressure + request.work_pressure],
+            "Total Satisfaction": [request.job_satisfaction + request.study_satisfaction],
             "CGPA": [request.cgpa],
-            "Study Satisfaction": [request.study_satisfaction],
-            "Job Satisfaction": [request.job_satisfaction],
             "Sleep Duration": [request.sleep_duration],
             "Dietary Habits": [request.dietary_habits],
             "Have you ever had suicidal thoughts ?": [request.suicidal_thoughts],
@@ -107,7 +105,7 @@ async def predict_depression(request: PredictionRequest):
         prediction_proba = model.predict_proba(Y_input)[0]
         
         # Determinar o risco de depressão
-        depression_risk = "Alto" if prediction == 1 else "Baixo"
+        depression_risk = "Não depressivo" if prediction == 1 else "Depressivo"
         
         return PredictionResponse(
             prediction=int(prediction),
