@@ -129,8 +129,9 @@ export const questions: QuestionBase[] = [
             {
                 id: "work_pressure",
                 title: "Como você avalia seu nível de pressão no trabalho?",
-                description: "Se você não trabalha, considere como 'Muito baixo'",
+                description: "Se você não trabalha, considere como 'Não aplicável'",
                 labels: [
+                    "Não aplicável",
                     "Muito baixo",
                     "Baixo",
                     "Moderado",
@@ -147,8 +148,9 @@ export const questions: QuestionBase[] = [
             {
                 id: "job_satisfaction",
                 title: "Qual seu nível de satisfação com o trabalho?",
-                description: "Se você não trabalha, considere sua satisfação com as atividades acadêmicas",
+                description: "Se você não trabalha, considere como 'Não aplicável'",
                 labels: [
+                    "Não aplicável",
                     "Muito insatisfeito",
                     "Insatisfeito",
                     "Neutro",

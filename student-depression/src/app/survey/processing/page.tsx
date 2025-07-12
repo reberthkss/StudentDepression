@@ -39,7 +39,8 @@ export default function Processing() {
 
             try {
                 const response: SurveyPredictDepressionResponse = await SurveyService.requestFeedback(answeredQuestions)
-                const probabilityToDepression = response.probability[response.prediction] * 100;
+                // Take the second element of the probability array which corresponds to depression
+                const probabilityToDepression = response.probability[1] * 100;
                 setDepressionProbability(probabilityToDepression);
                 setLoading(false);
 

@@ -13,11 +13,11 @@ interface SliderQuestionInterface extends QuestionBaseInterface {
 export class SliderQuestion extends QuestionBase implements SliderQuestionInterface {
     constructor(props: SliderQuestionInterface) {
         super({ id: props.id, title: props.title, description: props.description });
-        this.min = props.min ?? 1;
+        this.min = props.min ?? 0;
         this.max = props.max ?? 5;
         this.step = props.step ?? 1;
-        this.labels = props.labels ?? ['1', '2', '3', '4', '5'];
-        this.defaultValue = props.defaultValue ?? 1;
+        this.labels = props.labels ?? ['0', '1', '2', '3', '4', '5'];
+        this.defaultValue = props.defaultValue ?? 0;
     }
 
     min: number;
@@ -41,7 +41,7 @@ export class SliderQuestion extends QuestionBase implements SliderQuestionInterf
                 <div className="flex flex-row justify-between mt-2">
                     {
                         this.labels.map((label, index) => (
-                            <span key={index} className="text-sm text-gray-500 dark:text-gray-400">
+                            <span key={index} className="text-sm text-gray-500 dark:text-gray-400 text-ellipsis" >
                                 {label}
                             </span>
                         ))
