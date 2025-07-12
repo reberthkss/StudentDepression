@@ -4,7 +4,6 @@ import {
     NumberQuestion,
     QuestionBase,
     QuestionWithLayoutDecorator,
-    SliderQuestion
 } from "../model";
 
 export const questions: QuestionBase[] = [
