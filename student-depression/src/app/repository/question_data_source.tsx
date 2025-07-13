@@ -35,6 +35,7 @@ export const questions: QuestionBase[] = [
                 id: "age",
                 title: "Qual sua data de nascimento?",
                 description: "A idade é um fator importante na análise de saúde mental estudantil",
+                max: "2007-12-31"
             }
         )
     ),
