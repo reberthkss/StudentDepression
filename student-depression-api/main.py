@@ -12,10 +12,8 @@ class PredictionRequest(BaseModel):
     gender: str
     age: int
     academic_pressure: int = Field(alias='academic_pressure')
-    work_pressure: int = Field(alias='work_pressure')
     cgpa: float
     study_satisfaction: int = Field(alias='study_satisfaction')
-    job_satisfaction: int = Field(alias='job_satisfaction')
     sleep_duration: str = Field(alias='sleep_duration')
     dietary_habits: str = Field(alias='dietary_habits')
     suicidal_thoughts: str = Field(alias='suicidal_thoughts')
