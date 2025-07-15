@@ -17,12 +17,10 @@ export const questions: QuestionBase[] = [
                 alternatives: [
                     "Masculino",
                     "Feminino",
-                    "Outro"
                 ],
                 labels: [
                     "Masculino",
                     "Feminino",
-                    "Outro"
                 ],
             }
         )
@@ -36,25 +34,6 @@ export const questions: QuestionBase[] = [
                 title: "Qual sua data de nascimento?",
                 description: "A idade é um fator importante na análise de saúde mental estudantil",
                 max: "2007-12-31"
-            }
-        )
-    ),
-
-    // 3. Situação acadêmica/profissional
-    new QuestionWithLayoutDecorator(
-        new AlternativeQuestion(
-            {
-                id: "profession",
-                title: "Qual sua situação atual?",
-                description: "Selecione a opção que melhor descreve sua situação acadêmica/profissional",
-                alternatives: [
-                    "Estudante",
-                    "estuda/trabalha"
-                ],
-                labels: [
-                    "Apenas estudando",
-                    "Estudando e trabalhando"
-                ]
             }
         )
     ),
@@ -127,66 +106,12 @@ export const questions: QuestionBase[] = [
                     "Muito satisfeito"
                 ],
                 alternatives: [
-                    "0",
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-            }
-        )
-    ),
-
-    // 7. Pressão no trabalho (se aplicável)
-    new QuestionWithLayoutDecorator(
-        new AlternativeQuestion(
-            {
-                id: "work_pressure",
-                title: "Como você avalia seu nível de pressão no trabalho?",
-                description: "Se você não trabalha, considere como 'Não aplicável'",
-                labels: [
-                    "Não aplicável",
-                    "Muito baixo",
-                    "Baixo",
-                    "Moderado",
-                    "Alto",
-                    "Muito alto"
-                ],
-                alternatives: [
-                    "0",
                     "1",
                     "2",
                     "3",
                     "4",
                     "5"
-                ]
-            }
-        )
-    ),
-
-    // 8. Satisfação com trabalho
-    new QuestionWithLayoutDecorator(
-        new AlternativeQuestion(
-            {
-                id: "job_satisfaction",
-                title: "Qual seu nível de satisfação com o trabalho?",
-                description: "Se você não trabalha, considere como 'Não aplicável'",
-                labels: [
-                    "Não aplicável",
-                    "Muito insatisfeito",
-                    "Insatisfeito",
-                    "Neutro",
-                    "Satisfeito",
-                    "Muito satisfeito"
                 ],
-                alternatives: [
-                    "0",
-                    "1",
-                    "2",
-                    "3",
-                    "4",
-                    "5"
-                ]
             }
         )
     ),
@@ -203,14 +128,12 @@ export const questions: QuestionBase[] = [
                     "5-6 horas",
                     "7-8 horas",
                     "Mais de 8 horas",
-                    "Outros"
                 ],
                 labels: [
                     "Menos de 5 horas",
                     "Entre 5 e 6 horas",
                     "Entre 7 e 8 horas",
                     "Mais de 8 horas",
-                    "Varia muito"
                 ]
             }
         )

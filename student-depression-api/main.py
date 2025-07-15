@@ -31,7 +31,6 @@ class PredictionResponse(BaseModel):
     probability: List[float]
     depression_risk: str
     feature_feedback: List[Dict[str, Any]]
-    summary: Dict[str, Any]
 
 # Carregar o modelo e scaler
 RESOURCES_PATH = Path(__file__).parent / "resources"
@@ -40,24 +39,22 @@ MODEL_PATH = RESOURCES_PATH / "student-depression-svm.joblib"
 # Importância das features baseada na análise real do modelo SVM não linear (Obtidas por script executado no notebook)
 FEATURE_IMPORTANCE = {
     'Have you ever had suicidal thoughts ?': 33.9,
-    'Total Pressure': 19.9,
+    'Academic Pressure': 19.9,
     'Dietary Habits': 4.5,
     'Age': 6.4,
     'Work/Study Hours': 3.3,
-    'Profession': 0.0,
     'Family History of Mental Illness': 0.4,
     'Gender': 0.1,
     'Financial Stress': 12.8,
     'CGPA': -0.1,
     'Sleep Duration': 0.2,
-    'Total Satisfaction': -3.4
+    'Study Satisfaction': -3.4
 }
 
 # Mapeamento para português
 FEATURE_MAPPING = {
     'Gender': 'Gênero',
     'Age': 'Idade',
-    'Profession': 'Situação Profissional',
     'CGPA': 'Coeficiente de Rendimento (CR)',
     'Sleep Duration': 'Duração do Sono',
     'Dietary Habits': 'Hábitos Alimentares',
@@ -65,8 +62,8 @@ FEATURE_MAPPING = {
     'Work/Study Hours': 'Horas de Estudo/Trabalho',
     'Financial Stress': 'Estresse Financeiro',
     'Family History of Mental Illness': 'Histórico Familiar',
-    'Total Satisfaction': 'Satisfação Total',
-    'Total Pressure': 'Pressão Total'
+    'Study Satisfaction': 'Satisfação Academica',
+    'Academic Pressure': 'Academic Total'
 }
 
 def generate_feature_feedback(user_data: dict) -> List[Dict[str, Any]]:
@@ -101,22 +98,6 @@ def generate_feature_feedback(user_data: dict) -> List[Dict[str, Any]]:
         'impact_level': 'MODERADO',
         'message': age_feedback,
         'context': f"A idade tem importância moderada ({FEATURE_IMPORTANCE['Age']}%) no modelo, sendo mais relevante do que inicialmente estimado."
-    })
-    
-    # 3. Situação Profissional
-    prof_feedback = f"Sua situação como '{user_data['profession']}' "
-    if user_data['profession'] == 'Estudante':
-        prof_feedback += "pode ter efeito protetor, pois permite maior foco nos estudos sem pressões adicionais de trabalho."
-    else:
-        prof_feedback += "pode gerar pressões adicionais ao conciliar estudos e trabalho, mas também desenvolve habilidades de gestão."
-    
-    feedback_list.append({
-        'feature': 'Situação Profissional',
-        'user_value': user_data['profession'],
-        'importance': FEATURE_IMPORTANCE['Profession'],
-        'impact_level': 'BAIXO',
-        'message': prof_feedback,
-        'context': f"A situação profissional tem baixa importância ({FEATURE_IMPORTANCE['Profession']}%) no modelo atual."
     })
     
     # 4. Coeficiente de Rendimento (CR)
@@ -251,46 +232,46 @@ def generate_feature_feedback(user_data: dict) -> List[Dict[str, Any]]:
         'context': f"O histórico familiar tem baixa importância ({FEATURE_IMPORTANCE['Family History of Mental Illness']}%) no modelo."
     })
     
-    # 11. Satisfação Total
-    total_satisfaction = user_data['study_satisfaction'] + user_data['job_satisfaction']
-    satisfaction_feedback = f"Sua satisfação total de {total_satisfaction}/10 "
-    if total_satisfaction >= 8:
+    # 11. Satisfação Com estudos
+    study_satisfaction = user_data['study_satisfaction']
+    satisfaction_feedback = f"Sua satisfação com os estudos de {study_satisfaction}/5 "
+    if study_satisfaction >= 4:
         satisfaction_feedback += "é alta, indicando boa realização pessoal com suas atividades atuais. Isso é um forte fator protetor."
-    elif total_satisfaction >= 6:
+    elif study_satisfaction >= 3:
         satisfaction_feedback += "é moderada, mostrando alguma satisfação mas com espaço para melhorias na qualidade de vida."
-    elif total_satisfaction >= 4:
+    elif study_satisfaction >= 2:
         satisfaction_feedback += "é baixa e pode estar contribuindo para sentimentos de desmotivação e insatisfação geral."
     else:
         satisfaction_feedback += "é muito baixa, indicando possível necessidade de mudanças significativas em suas atividades ou perspectivas."
     
     feedback_list.append({
-        'feature': 'Satisfação Total',
-        'user_value': f"{total_satisfaction}/10",
-        'importance': FEATURE_IMPORTANCE['Total Satisfaction'],
+        'feature': 'Satisfação com Estudos',
+        'user_value': f"{study_satisfaction}/5",
+        'importance': FEATURE_IMPORTANCE['Study Satisfaction'],
         'impact_level': 'BAIXO',
         'message': satisfaction_feedback,
-        'context': f"A satisfação total tem importância negativa ({FEATURE_IMPORTANCE['Total Satisfaction']}%) no modelo, mas é importante para qualidade de vida."
+        'context': f"A satisfação com os estudos tem importância negativa ({FEATURE_IMPORTANCE['Study Satisfaction']}%) no modelo, mas é importante para qualidade de vida."
     })
     
-    # 12. Pressão Total (ALTO IMPACTO)
-    total_pressure = user_data['academic_pressure'] + user_data['work_pressure']
-    pressure_feedback = f"Sua pressão total de {total_pressure}/10 "
-    if total_pressure <= 3:
+    # 12. Pressão Academica (ALTO IMPACTO)
+    academic_pressure = user_data['academic_pressure']
+    pressure_feedback = f"Sua pressão academica de {academic_pressure}/5 "
+    if academic_pressure <= 4:
         pressure_feedback += "é baixa, o que é altamente protetor contra desenvolvimento de sintomas depressivos."
-    elif total_pressure <= 5:
+    elif academic_pressure <= 3:
         pressure_feedback += "é moderada e ainda manejável, mas requer atenção para não aumentar."
-    elif total_pressure <= 7:
+    elif academic_pressure <= 2:
         pressure_feedback += "é alta e representa um fator de risco significativo. É importante desenvolver estratégias de manejo de estresse."
     else:
         pressure_feedback += "é muito alta e representa o SEGUNDO MAIOR FATOR DE RISCO no modelo. É crucial buscar formas de reduzir essa pressão."
     
     feedback_list.append({
         'feature': 'Pressão Total',
-        'user_value': f"{total_pressure}/10",
-        'importance': FEATURE_IMPORTANCE['Total Pressure'],
+        'user_value': f"{academic_pressure}/5",
+        'importance': FEATURE_IMPORTANCE['Academic Pressure'],
         'impact_level': 'ALTO',
         'message': pressure_feedback,
-        'context': f"A pressão total é o SEGUNDO FATOR MAIS IMPORTANTE ({FEATURE_IMPORTANCE['Total Pressure']}%) no modelo de predição."
+        'context': f"A pressão academica é o SEGUNDO FATOR MAIS IMPORTANTE ({FEATURE_IMPORTANCE['Academic Pressure']}%) no modelo de predição."
     })
     
     return feedback_list
@@ -299,8 +280,8 @@ def generate_summary(user_data: dict, prediction: int, probability: List[float])
     """
     Gera resumo da análise
     """
-    total_pressure = user_data['academic_pressure'] + user_data['work_pressure']
-    total_satisfaction = user_data['study_satisfaction'] + user_data['job_satisfaction']
+    academic_pressure = user_data['academic_pressure']
+    study_satisfaction = user_data['study_satisfaction']
     
     # Contar fatores críticos e de alto risco
     critical_factors = []
@@ -309,8 +290,8 @@ def generate_summary(user_data: dict, prediction: int, probability: List[float])
     if user_data['suicidal_thoughts'] == 'Sim':
         critical_factors.append('Pensamentos Suicidas')
     
-    if total_pressure >= 7:
-        high_risk_factors.append('Pressão Total Alta')
+    if academic_pressure >= 3:
+        high_risk_factors.append('Pressão Academica Alta')
     
     if user_data['sleep_duration'] == 'Menos de 5 horas':
         high_risk_factors.append('Sono Insuficiente')
@@ -318,7 +299,7 @@ def generate_summary(user_data: dict, prediction: int, probability: List[float])
     if user_data['financial_stress'] >= 4:
         high_risk_factors.append('Alto Estresse Financeiro')
     
-    if total_satisfaction <= 4:
+    if study_satisfaction <= 2:
         high_risk_factors.append('Baixa Satisfação')
     
     confidence = max(probability) * 100
@@ -326,8 +307,8 @@ def generate_summary(user_data: dict, prediction: int, probability: List[float])
     return {
         'prediction_confidence': f"{confidence:.1f}%",
         'main_risk_factors': critical_factors + high_risk_factors,
-        'total_pressure_score': total_pressure,
-        'total_satisfaction_score': total_satisfaction,
+        'total_pressure_score': academic_pressure,
+        'total_satisfaction_score': study_satisfaction,
         'critical_alerts': len(critical_factors),
         'recommendation': 'URGENTE: Procure ajuda profissional imediatamente' if critical_factors else 
                          'Considere buscar apoio profissional' if len(high_risk_factors) >= 2 else
@@ -383,7 +364,6 @@ async def predict_depression(request: PredictionRequest):
         user_data = {
             'gender': request.gender,
             'age': request.age,
-            'profession': request.profession,
             'academic_pressure': request.academic_pressure,
             'work_pressure': request.work_pressure,
             'cgpa': request.cgpa,
@@ -401,7 +381,6 @@ async def predict_depression(request: PredictionRequest):
         model_input = {
             "Gender": [request.gender],
             "Age": [request.age],
-            "Profession": [request.profession],
             "Total Pressure": [request.academic_pressure + request.work_pressure],
             "Total Satisfaction": [request.job_satisfaction + request.study_satisfaction],
             "CGPA": [request.cgpa],
@@ -425,15 +404,11 @@ async def predict_depression(request: PredictionRequest):
         # Gerar feedback detalhado para todas as features
         feature_feedback = generate_feature_feedback(user_data)
         
-        # Gerar resumo
-        summary = generate_summary(user_data, prediction, prediction_proba)
-        
         return PredictionResponse(
             prediction=int(prediction),
             probability=prediction_proba.tolist(),
             depression_risk=depression_risk,
             feature_feedback=feature_feedback,
-            summary=summary
         )
         
     except Exception as e:
