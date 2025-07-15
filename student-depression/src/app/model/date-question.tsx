@@ -28,6 +28,8 @@ export class DateQuestion extends QuestionBase implements DateQuestionInterface 
 
                     if (selectedDate < maxDate) {
                         onResponseCallback.onChange(e.target.value)
+                    } else {
+                        onResponseCallback.onChange('')
                     }
                 }}
                 min={this.min}
