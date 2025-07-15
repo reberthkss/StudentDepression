@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import joblib
 from pathlib import Path
-import numpy as np
 import pandas as pd
 
 FRONTEND_URL = "https://studentdepression.onrender.com"
@@ -12,7 +11,6 @@ FRONTEND_URL = "https://studentdepression.onrender.com"
 class PredictionRequest(BaseModel):
     gender: str
     age: int
-    profession: str
     academic_pressure: int = Field(alias='academic_pressure')
     work_pressure: int = Field(alias='work_pressure')
     cgpa: float
@@ -38,15 +36,15 @@ MODEL_PATH = RESOURCES_PATH / "student-depression-svm.joblib"
 
 # Importância das features baseada na análise real do modelo SVM não linear (Obtidas por script executado no notebook)
 FEATURE_IMPORTANCE = {
-    'Have you ever had suicidal thoughts ?': 48.9,
+    'Have you ever had suicidal thoughts ?': 48.5,
     'Academic Pressure': 26.1,
     'Financial Stress': 11.4,
     'Age': 5.9,
-    'Work/Study Hours': 2.6,
-    'Dietary Habits': 2.3,
-    'Study Satisfaction': 2.1,
+    'Work/Study Hours': 2.4,
+    'Dietary Habits': 2.4,
+    'Study Satisfaction': 2.3,
     'Sleep Duration': 0.6,
-    'Gender': 0.3,
+    'Gender': 0.4,
     'Family History of Mental Illness': 0.1,
     'CGPA': -0.1,
 }
@@ -79,10 +77,10 @@ def generate_feature_feedback(user_data: dict) -> List[Dict[str, Any]]:
         'importance': FEATURE_IMPORTANCE['Gender'],
         'impact_level': 'BAIXO',
         'message': f"Com base em sua resposta, o gênero '{user_data['gender']}' tem impacto mínimo na predição de depressão. Estudos mostram pequenas diferenças entre gêneros, mas fatores individuais são mais determinantes.",
-        'context': f"O gênero representa apenas {FEATURE_IMPORTANCE['Gender']} da importância no modelo, indicando que não é um fator determinante."
+        'context': f"O gênero representa apenas {FEATURE_IMPORTANCE['Gender']}% da importância no modelo, indicando que não é um fator determinante."
     })
     
-    # 2. Idade - AGORA MODERADO (6.4%)
+    # 2. Idade - MODERADO (5.9%)
     age_feedback = f"Com base na sua idade de {user_data['age']} anos, "
     if user_data['age'] <= 20:
         age_feedback += "você está em uma faixa etária onde episódios depressivos podem estar relacionados à adaptação universitária e independência. A idade tem um impacto moderado no modelo."
@@ -97,7 +95,7 @@ def generate_feature_feedback(user_data: dict) -> List[Dict[str, Any]]:
         'importance': FEATURE_IMPORTANCE['Age'],
         'impact_level': 'MODERADO',
         'message': age_feedback,
-        'context': f"A idade tem importância moderada ({FEATURE_IMPORTANCE['Age']}%) no modelo, sendo mais relevante do que inicialmente estimado."
+        'context': f"A idade tem importância moderada ({FEATURE_IMPORTANCE['Age']}%) no modelo, sendo o quarto fator mais relevante."
     })
     
     # 4. Coeficiente de Rendimento (CR)
@@ -120,10 +118,10 @@ def generate_feature_feedback(user_data: dict) -> List[Dict[str, Any]]:
         'context': f"O CR tem baixa importância ({FEATURE_IMPORTANCE['CGPA']}%) no modelo, mas pode afetar autoestima e perspectivas futuras."
     })
     
-    # 5. Duração do Sono
+    # 5. Duração do Sono - BAIXO (0.6%)
     sleep_feedback = f"Sua duração de sono '{user_data['sleep_duration']}' "
     if user_data['sleep_duration'] == 'Menos de 5 horas':
-        sleep_feedback += "é insuficiente e pode estar impactando significativamente seu humor, concentração e bem-estar geral. É um fator de risco importante."
+        sleep_feedback += "é insuficiente e pode estar impactando seu humor, concentração e bem-estar geral. Embora tenha baixo peso no modelo, é fundamental para saúde mental."
     elif user_data['sleep_duration'] == '5-6 horas':
         sleep_feedback += "está abaixo do recomendado para a maioria dos adultos. Pode estar afetando sua capacidade de lidar com estresse."
     elif user_data['sleep_duration'] == '7-8 horas':
@@ -139,35 +137,35 @@ def generate_feature_feedback(user_data: dict) -> List[Dict[str, Any]]:
         'importance': FEATURE_IMPORTANCE['Sleep Duration'],
         'impact_level': 'BAIXO',
         'message': sleep_feedback,
-        'context': f"A duração do sono tem importância negativa ({FEATURE_IMPORTANCE['Sleep Duration']}%) no modelo, mas é fundamental para saúde mental."
+        'context': f"A duração do sono tem baixa importância ({FEATURE_IMPORTANCE['Sleep Duration']}%) no modelo, mas permanece crucial para bem-estar geral."
     })
     
-    # 6. Hábitos Alimentares - MODERADO (4.5%)
+    # 6. Hábitos Alimentares - BAIXO (2.3%)
     diet_feedback = f"Seus hábitos alimentares '{user_data['dietary_habits']}' "
     if user_data['dietary_habits'] == 'Muito saudáveis':
-        diet_feedback += "são excelentes e contribuem positivamente para sua energia, humor e bem-estar geral. Isso representa um fator protetor moderado."
+        diet_feedback += "são excelentes e contribuem positivamente para sua energia, humor e bem-estar geral. Embora tenham baixo peso no modelo, são importantes para qualidade de vida."
     elif user_data['dietary_habits'] == 'Moderadamente saudáveis':
         diet_feedback += "mostram boa consciência nutricional, com espaço para pequenos ajustes que podem melhorar seu bem-estar."
     elif user_data['dietary_habits'] == 'Pouco saudáveis':
-        diet_feedback += "podem estar impactando moderadamente sua energia e humor. Mudanças na alimentação podem ter benefícios significativos."
+        diet_feedback += "podem estar impactando sua energia e humor. Mudanças na alimentação podem ter benefícios para bem-estar geral."
     else:
-        diet_feedback += "podem estar afetando negativamente sua energia, concentração e estabilidade emocional de forma moderada."
+        diet_feedback += "podem estar afetando negativamente sua energia, concentração e estabilidade emocional."
     
     feedback_list.append({
         'feature': 'Hábitos Alimentares',
         'user_value': user_data['dietary_habits'],
         'importance': FEATURE_IMPORTANCE['Dietary Habits'],
-        'impact_level': 'MODERADO',
+        'impact_level': 'BAIXO',
         'message': diet_feedback,
-        'context': f"Os hábitos alimentares têm importância moderada de {FEATURE_IMPORTANCE['Dietary Habits']}% no modelo, sendo um fator relevante para o bem-estar mental."
+        'context': f"Os hábitos alimentares têm baixa importância ({FEATURE_IMPORTANCE['Dietary Habits']}%) no modelo, mas contribuem para o bem-estar geral."
     })
     
-    # 7. Pensamentos Suicidas (CRÍTICO)
+    # 7. Pensamentos Suicidas (CRÍTICO - 48.5%)
     suicidal_feedback = f"Sua resposta '{user_data['suicidal_thoughts']}' sobre pensamentos suicidas "
     if user_data['suicidal_thoughts'] == 'Sim':
-        suicidal_feedback += "é o fator de MAIOR RISCO identificado pelo modelo. É FUNDAMENTAL buscar ajuda profissional imediatamente. Existem tratamentos eficazes e você não está sozinho(a)."
+        suicidal_feedback += "é o fator de MAIOR RISCO identificado pelo modelo, representando quase metade da importância total. É FUNDAMENTAL buscar ajuda profissional imediatamente. Existem tratamentos eficazes e você não está sozinho(a)."
     else:
-        suicidal_feedback += "é altamente protetiva e representa o fator mais importante para reduzir o risco de depressão no modelo."
+        suicidal_feedback += "é extremamente protetiva e representa o fator mais importante para reduzir o risco de depressão no modelo, com quase metade do peso total da predição."
     
     feedback_list.append({
         'feature': 'Pensamentos Suicidas',
@@ -175,13 +173,13 @@ def generate_feature_feedback(user_data: dict) -> List[Dict[str, Any]]:
         'importance': FEATURE_IMPORTANCE['Have you ever had suicidal thoughts ?'],
         'impact_level': 'CRÍTICO',
         'message': suicidal_feedback,
-        'context': f"Esta é a feature MAIS IMPORTANTE ({FEATURE_IMPORTANCE['Have you ever had suicidal thoughts ?']}%) no modelo. Determina fortemente o resultado da predição."
+        'context': f"Esta é a feature MAIS IMPORTANTE ({FEATURE_IMPORTANCE['Have you ever had suicidal thoughts ?']}%) no modelo, representando quase metade de toda a predição. É o fator mais determinante."
     })
     
-    # 8. Horas de Estudo/Trabalho - BAIXO (3.3%)
+    # 8. Horas de Estudo/Trabalho - BAIXO (2.4%)
     hours_feedback = f"Suas {user_data['work_study_hours']} horas de estudo/trabalho por dia "
     if user_data['work_study_hours'] <= 4:
-        hours_feedback += "indicam carga leve, o que pode ser protetor contra sobrecarga, mas verifique se está sendo produtivo."
+        hours_feedback += "indicam carga leve, o que pode ser protetor contra sobrecarga. Embora tenha baixo peso no modelo, ainda influencia o bem-estar."
     elif user_data['work_study_hours'] <= 8:
         hours_feedback += "representam uma carga equilibrada, adequada para a maioria das pessoas."
     elif user_data['work_study_hours'] <= 12:
@@ -232,11 +230,11 @@ def generate_feature_feedback(user_data: dict) -> List[Dict[str, Any]]:
         'context': f"O histórico familiar tem baixa importância ({FEATURE_IMPORTANCE['Family History of Mental Illness']}%) no modelo."
     })
     
-    # 11. Satisfação Com estudos
+    # 11. Satisfação Com estudos - BAIXO (2.3%)
     study_satisfaction = user_data['study_satisfaction']
     satisfaction_feedback = f"Sua satisfação com os estudos de {study_satisfaction}/5 "
     if study_satisfaction >= 4:
-        satisfaction_feedback += "é alta, indicando boa realização pessoal com suas atividades atuais. Isso é um forte fator protetor."
+        satisfaction_feedback += "é alta, indicando boa realização pessoal com suas atividades atuais. Embora tenha baixo peso no modelo, é um fator protetor importante para qualidade de vida."
     elif study_satisfaction >= 3:
         satisfaction_feedback += "é moderada, mostrando alguma satisfação mas com espaço para melhorias na qualidade de vida."
     elif study_satisfaction >= 2:
@@ -250,70 +248,33 @@ def generate_feature_feedback(user_data: dict) -> List[Dict[str, Any]]:
         'importance': FEATURE_IMPORTANCE['Study Satisfaction'],
         'impact_level': 'BAIXO',
         'message': satisfaction_feedback,
-        'context': f"A satisfação com os estudos tem importância negativa ({FEATURE_IMPORTANCE['Study Satisfaction']}%) no modelo, mas é importante para qualidade de vida."
+        'context': f"A satisfação com os estudos tem baixa importância ({FEATURE_IMPORTANCE['Study Satisfaction']}%) no modelo, mas é relevante para qualidade de vida geral."
     })
     
-    # 12. Pressão Academica (ALTO IMPACTO)
+    # 12. Pressão Acadêmica (MUITO ALTO - 26.1%)
     academic_pressure = user_data['academic_pressure']
-    pressure_feedback = f"Sua pressão academica de {academic_pressure}/5 "
-    if academic_pressure <= 4:
-        pressure_feedback += "é baixa, o que é altamente protetor contra desenvolvimento de sintomas depressivos."
-    elif academic_pressure <= 3:
-        pressure_feedback += "é moderada e ainda manejável, mas requer atenção para não aumentar."
+    pressure_feedback = f"Sua pressão acadêmica de {academic_pressure}/5 "
+    if academic_pressure <= 1:
+        pressure_feedback += "é muito baixa, o que é extremamente protetor contra desenvolvimento de sintomas depressivos."
     elif academic_pressure <= 2:
-        pressure_feedback += "é alta e representa um fator de risco significativo. É importante desenvolver estratégias de manejo de estresse."
+        pressure_feedback += "é baixa, o que é altamente protetor contra desenvolvimento de sintomas depressivos."
+    elif academic_pressure == 3:
+        pressure_feedback += "é moderada e ainda manejável, mas requer atenção para não aumentar, dado seu alto peso no modelo."
+    elif academic_pressure == 4:
+        pressure_feedback += "é alta e representa um fator de risco MUITO SIGNIFICATIVO. É importante desenvolver estratégias de manejo de estresse urgentemente."
     else:
-        pressure_feedback += "é muito alta e representa o SEGUNDO MAIOR FATOR DE RISCO no modelo. É crucial buscar formas de reduzir essa pressão."
+        pressure_feedback += "é extremamente alta e representa o SEGUNDO MAIOR FATOR DE RISCO no modelo. É CRUCIAL buscar formas de reduzir essa pressão imediatamente."
     
     feedback_list.append({
-        'feature': 'Pressão Total',
+        'feature': 'Pressão Acadêmica',
         'user_value': f"{academic_pressure}/5",
         'importance': FEATURE_IMPORTANCE['Academic Pressure'],
-        'impact_level': 'ALTO',
+        'impact_level': 'MUITO ALTO',
         'message': pressure_feedback,
-        'context': f"A pressão academica é o SEGUNDO FATOR MAIS IMPORTANTE ({FEATURE_IMPORTANCE['Academic Pressure']}%) no modelo de predição."
+        'context': f"A pressão acadêmica é o SEGUNDO FATOR MAIS IMPORTANTE ({FEATURE_IMPORTANCE['Academic Pressure']}%) no modelo de predição, com peso muito significativo."
     })
     
     return feedback_list
-
-def generate_summary(user_data: dict, prediction: int, probability: List[float]) -> Dict[str, Any]:
-    """
-    Gera resumo da análise
-    """
-    academic_pressure = user_data['academic_pressure']
-    study_satisfaction = user_data['study_satisfaction']
-    
-    # Contar fatores críticos e de alto risco
-    critical_factors = []
-    high_risk_factors = []
-    
-    if user_data['suicidal_thoughts'] == 'Sim':
-        critical_factors.append('Pensamentos Suicidas')
-    
-    if academic_pressure >= 3:
-        high_risk_factors.append('Pressão Academica Alta')
-    
-    if user_data['sleep_duration'] == 'Menos de 5 horas':
-        high_risk_factors.append('Sono Insuficiente')
-    
-    if user_data['financial_stress'] >= 4:
-        high_risk_factors.append('Alto Estresse Financeiro')
-    
-    if study_satisfaction <= 2:
-        high_risk_factors.append('Baixa Satisfação')
-    
-    confidence = max(probability) * 100
-    
-    return {
-        'prediction_confidence': f"{confidence:.1f}%",
-        'main_risk_factors': critical_factors + high_risk_factors,
-        'total_pressure_score': academic_pressure,
-        'total_satisfaction_score': study_satisfaction,
-        'critical_alerts': len(critical_factors),
-        'recommendation': 'URGENTE: Procure ajuda profissional imediatamente' if critical_factors else 
-                         'Considere buscar apoio profissional' if len(high_risk_factors) >= 2 else
-                         'Continue monitorando seu bem-estar'
-    }
 
 # Carregar os modelos
 try:
