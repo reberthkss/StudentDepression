@@ -22,7 +22,14 @@ export class DateQuestion extends QuestionBase implements DateQuestionInterface 
             <input
                 type="date"
                 className="w-full p-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:text-white"
-                onChange={(e) => onResponseCallback.onChange(e.target.value)}
+                onChange={(e) => {
+                    const maxDate = new Date(this.max);
+                    const selectedDate = new Date(e.target.value);
+
+                    if (selectedDate < maxDate) {
+                        onResponseCallback.onChange(e.target.value)
+                    }
+                }}
                 min={this.min}
                 max={this.max}
             />
