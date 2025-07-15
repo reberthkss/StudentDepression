@@ -38,17 +38,17 @@ MODEL_PATH = RESOURCES_PATH / "student-depression-svm.joblib"
 
 # Importância das features baseada na análise real do modelo SVM não linear (Obtidas por script executado no notebook)
 FEATURE_IMPORTANCE = {
-    'Have you ever had suicidal thoughts ?': 33.9,
-    'Academic Pressure': 19.9,
-    'Dietary Habits': 4.5,
-    'Age': 6.4,
-    'Work/Study Hours': 3.3,
-    'Family History of Mental Illness': 0.4,
-    'Gender': 0.1,
-    'Financial Stress': 12.8,
+    'Have you ever had suicidal thoughts ?': 48.9,
+    'Academic Pressure': 26.1,
+    'Financial Stress': 11.4,
+    'Age': 5.9,
+    'Work/Study Hours': 2.6,
+    'Dietary Habits': 2.3,
+    'Study Satisfaction': 2.1,
+    'Sleep Duration': 0.6,
+    'Gender': 0.3,
+    'Family History of Mental Illness': 0.1,
     'CGPA': -0.1,
-    'Sleep Duration': 0.2,
-    'Study Satisfaction': -3.4
 }
 
 # Mapeamento para português
